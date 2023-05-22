@@ -64,9 +64,11 @@ public class OperationService {
             accountFrom.setBalance(new Balance(Currency.RUR_CODE, balanceAccountFrom - valueTransfer));
             accountTo.setBalance(new Balance(Currency.RUR_CODE, balanceAccountTo + valueTransfer));
 
-            logger.log(accountFrom, accountTo, valueTransfer, operationId);
-        } else
+            logger.log(accountFrom, accountTo, valueTransfer, operationId, TransferResult.SUCCESS);
+        } else {
+            logger.log(accountFrom, accountTo, valueTransfer, operationId, TransferResult.FAIL);
             throw new ErrorTransfer();
+        }
     }
 
     private static CreditCard createCreditCardFrom(CreditCardInfoToTransfer creditCardInfoToTransfer) {

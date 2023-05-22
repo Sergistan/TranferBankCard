@@ -13,7 +13,11 @@ public class Logger {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
     private final String dataTime = dateFormat.format(currentTime);
 
-    public void log(Account accountFrom, Account accountTo, int valueTransfer, String operationId) {
+    public void log(Account accountFrom,
+                    Account accountTo,
+                    int valueTransfer,
+                    String operationId,
+                    TransferResult result) {
         String cardNumberFrom = accountFrom.getCreditCard().getCardNumber();
         String cardNumberTo = accountTo.getCreditCard().getCardNumber();
 
@@ -21,12 +25,24 @@ public class Logger {
         int commission = valueTransfer / 100;
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("log.txt",true))) {
-            bw.write("(" + dataTime + ") " + "Перевод с карты: " + cardNumberFrom + " на карту" + cardNumberTo + " . Сумма перевода: " + valueTransfer +
-                    " комиссия 1 %: " + commission + " , баланс на карте: " + balanceAccountFrom + " . Идентификационный код: " + operationId + "\n");
+            bw.write("(" + dataTime + ") " +
+                    //TODO: скрыть карты
+                    "Перевод с карты: " + encryptionCardNumber(cardNumberFrom) +
+                    " на карту" + encryptionCardNumber(cardNumberTo) +
+                    ". " + "\n" +
+                    "Сумма перевода: " + valueTransfer +
+                    " Комиссия 1 %: " + commission +
+                    ", баланс на карте: " + balanceAccountFrom +
+                    ". Идентификатор операции: " + operationId +
+                    ". Статус операции: " + result.getCode() +
+                    "\n");
             bw.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private String encryptionCardNumber (String cardNumber){
+        return "*" + cardNumber.substring(cardNumber.length()-4);
     }
 }
