@@ -25,11 +25,9 @@ public class CreditCardInfoToTransfer {
     @Pattern(regexp = "\\d+")
     private String cardToNumber;
 
-    @Size (min = 4, max = 4)
     @NotBlank
     @NotEmpty
     @NotNull
-    @Pattern(regexp = "\\d+")
     private String cardFromValidTill;
 
     @Size (min = 3, max = 3)

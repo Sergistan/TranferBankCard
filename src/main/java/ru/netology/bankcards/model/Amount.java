@@ -11,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Amount {
-    private Currency currency;
+    private String currency;
 
     @NotBlank
     @NotEmpty

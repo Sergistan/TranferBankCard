@@ -61,8 +61,8 @@ public class OperationService {
         int valueTransfer = transferOperation.getAmount().getValue();
 
         if (balanceAccountFrom > valueTransfer) {
-            accountFrom.setBalance(new Balance(Currency.RUR_CODE, balanceAccountFrom - valueTransfer));
-            accountTo.setBalance(new Balance(Currency.RUR_CODE, balanceAccountTo + valueTransfer));
+            accountFrom.setBalance(new Balance("RUR", balanceAccountFrom - valueTransfer));
+            accountTo.setBalance(new Balance("RUR", balanceAccountTo + valueTransfer));
 
             logger.log(accountFrom, accountTo, valueTransfer, operationId, TransferResult.SUCCESS);
         } else {

@@ -26,14 +26,14 @@ public class Logger {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("log.txt",true))) {
             bw.write("(" + dataTime + ") " +
-                    //TODO: скрыть карты
-                    "Перевод с карты: " + encryptionCardNumber(cardNumberFrom) +
-                    " на карту" + encryptionCardNumber(cardNumberTo) +
+                    "Перевод с карты " + encryptionCardNumber(cardNumberFrom) +
+                    " на карту " + encryptionCardNumber(cardNumberTo) +
                     ". " + "\n" +
-                    "Сумма перевода: " + valueTransfer +
-                    " Комиссия 1 %: " + commission +
-                    ", баланс на карте: " + balanceAccountFrom +
-                    ". Идентификатор операции: " + operationId +
+                    "Сумма перевода: " + valueTransfer + " руб.," +
+                    " комиссия 1 %: " + commission + " руб.," +
+                    " баланс на карте: " + balanceAccountFrom + " руб." +
+                     "\n" +
+                    "Идентификатор операции: " + operationId +
                     ". Статус операции: " + result.getCode() +
                     "\n");
             bw.flush();
