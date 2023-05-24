@@ -39,7 +39,7 @@ public class OperationService {
         TransferOperation operation = transferOperationRepository.getById(operationId);
 
         if (operation == null) {
-            throw new ErrorTransfer();
+            throw new ErrorConfirmation();
         }
 
         if (!verificationRequest.getCode().equals("0000")) {
@@ -59,9 +59,10 @@ public class OperationService {
         int balanceAccountFrom = accountFrom.getBalance().getAmount();
         int balanceAccountTo = accountTo.getBalance().getAmount();
         int valueTransfer = transferOperation.getAmount().getValue();
+        int commission = valueTransfer / 100;
 
         if (balanceAccountFrom > valueTransfer) {
-            accountFrom.setBalance(new Balance("RUR", balanceAccountFrom - valueTransfer));
+            accountFrom.setBalance(new Balance("RUR", balanceAccountFrom - valueTransfer - commission));
             accountTo.setBalance(new Balance("RUR", balanceAccountTo + valueTransfer));
 
             logger.log(accountFrom, accountTo, valueTransfer, operationId, TransferResult.SUCCESS);

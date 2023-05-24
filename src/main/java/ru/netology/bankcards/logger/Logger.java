@@ -1,6 +1,7 @@
 package ru.netology.bankcards.logger;
 
-import ru.netology.bankcards.model.*;
+import ru.netology.bankcards.model.Account;
+import ru.netology.bankcards.model.TransferResult;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -24,7 +25,7 @@ public class Logger {
         int balanceAccountFrom = accountFrom.getBalance().getAmount();
         int commission = valueTransfer / 100;
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("log.txt",true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("log.txt", true))) {
             bw.write("(" + dataTime + ") " +
                     "Перевод с карты " + encryptionCardNumber(cardNumberFrom) +
                     " на карту " + encryptionCardNumber(cardNumberTo) +
@@ -32,7 +33,7 @@ public class Logger {
                     "Сумма перевода: " + valueTransfer + " руб.," +
                     " комиссия 1 %: " + commission + " руб.," +
                     " баланс на карте: " + balanceAccountFrom + " руб." +
-                     "\n" +
+                    "\n" +
                     "Идентификатор операции: " + operationId +
                     ". Статус операции: " + result.getCode() +
                     "\n");
@@ -42,7 +43,7 @@ public class Logger {
         }
     }
 
-    private String encryptionCardNumber (String cardNumber){
-        return "*" + cardNumber.substring(cardNumber.length()-4);
+    private String encryptionCardNumber(String cardNumber) {
+        return "*" + cardNumber.substring(cardNumber.length() - 4);
     }
 }
