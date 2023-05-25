@@ -27,10 +27,13 @@ public class OperationService {
         CreditCard creditCardFrom = createCreditCardFrom(creditCardInfoToTransfer);
         CreditCard creditCardTo = createCreditCardTo(creditCardInfoToTransfer);
 
-        if (isNumbersCreditCardExist(creditCardFrom, creditCardTo) && isCardFromValidTill(creditCardFrom) && isCardFromValidCVV(creditCardFrom)) {
+        if (isNumbersCreditCardExist(creditCardFrom, creditCardTo) &&
+                isCardFromValidTill(creditCardFrom) &&
+                isCardFromValidCVV(creditCardFrom)) {
             TransferOperation transferOperation = new TransferOperation(creditCardFrom, creditCardTo, creditCardInfoToTransfer.getAmount());
             return transferOperationRepository.save(transferOperation);
         }
+
         throw new ErrorInputData();
     }
 
