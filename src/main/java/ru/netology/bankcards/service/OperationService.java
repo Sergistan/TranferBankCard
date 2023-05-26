@@ -2,6 +2,8 @@ package ru.netology.bankcards.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.netology.bankcards.controller.CreditCardInfoToTransfer;
+import ru.netology.bankcards.controller.VerificationRequest;
 import ru.netology.bankcards.logger.Logger;
 import ru.netology.bankcards.utils.ErrorConfirmation;
 import ru.netology.bankcards.utils.ErrorInputData;

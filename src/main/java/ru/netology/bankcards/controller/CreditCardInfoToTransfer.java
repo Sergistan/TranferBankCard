@@ -1,10 +1,11 @@
-package ru.netology.bankcards.model;
+package ru.netology.bankcards.controller;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.netology.bankcards.model.Amount;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package ru.netology.bankcards.model;
+package ru.netology.bankcards.controller;
 
 import lombok.Getter;
 import lombok.Setter;

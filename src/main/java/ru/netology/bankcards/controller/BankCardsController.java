@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.netology.bankcards.utils.ErrorConfirmation;
 import ru.netology.bankcards.utils.ErrorInputData;
 import ru.netology.bankcards.utils.ErrorTransfer;
-import ru.netology.bankcards.model.CreditCardInfoToTransfer;
 import ru.netology.bankcards.utils.ErrorResponse;
 import ru.netology.bankcards.model.OperationResult;
-import ru.netology.bankcards.model.VerificationRequest;
 import ru.netology.bankcards.service.OperationService;
 
 @RestController
