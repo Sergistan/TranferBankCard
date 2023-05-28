@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  back:
+    build: ./
+    container_name: 'backend'
+    ports:
+      - '5500:5500'
+  front:
+    build:
+      context: C:\\Users\\dzaga\\IdeaProjects\\card-transfer
+    container_name: 'front'
+    ports:
+      - '3000:3000'
