@@ -10,23 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.containers.GenericContainer;
-import ru.netology.bankcards.controller.CreditCardInfoToTransfer;
-import ru.netology.bankcards.controller.VerificationRequest;
+import ru.netology.bankcards.model.CreditCardInfoToTransfer;
+import ru.netology.bankcards.model.VerificationRequest;
 import ru.netology.bankcards.model.Amount;
 import ru.netology.bankcards.model.CreditCard;
 import ru.netology.bankcards.model.OperationResult;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BankCardsIntegrationTests {
+public class BankCardsIntegrationTest {
     @Autowired
     TestRestTemplate restTemplate;
 
-    private static CreditCard creditCardFrom;
-    private static CreditCard creditCardTo;
-    private static Amount randomTransferAmount;
-    private static CreditCardInfoToTransfer creditCardInfoToTransfer;
-    private static VerificationRequest verificationRequest;
+    private CreditCard creditCardFrom;
+    private CreditCard creditCardTo;
+    private Amount randomTransferAmount;
+    private CreditCardInfoToTransfer creditCardInfoToTransfer;
+    private VerificationRequest verificationRequest;
     private final GenericContainer<?> backend = new GenericContainer<>("backend")
             .withExposedPorts(5500);
     private final GenericContainer<?> frontend = new GenericContainer<>("frontend")
@@ -47,6 +47,8 @@ public class BankCardsIntegrationTests {
 
         creditCardTo = new CreditCard();
         creditCardTo.setCardNumber("0987654321098765");
+        creditCardTo.setCardValidTill("01/24");
+        creditCardTo.setCardCVV("987");
 
         randomTransferAmount = new Amount("RUR", 55);
 

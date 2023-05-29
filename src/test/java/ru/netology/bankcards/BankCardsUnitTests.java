@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.netology.bankcards.controller.VerificationRequest;
+import ru.netology.bankcards.model.VerificationRequest;
 import ru.netology.bankcards.model.Amount;
-import ru.netology.bankcards.controller.CreditCardInfoToTransfer;
+import ru.netology.bankcards.model.CreditCardInfoToTransfer;
 import ru.netology.bankcards.model.*;
 import ru.netology.bankcards.repository.BankCardsRepository;
 import ru.netology.bankcards.repository.TransferOperationRepository;
@@ -17,27 +17,27 @@ import ru.netology.bankcards.utils.ErrorConfirmation;
 import ru.netology.bankcards.utils.ErrorInputData;
 import ru.netology.bankcards.utils.ErrorTransfer;
 
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 class BankCardsUnitTests {
-    private static CreditCard creditCardFrom;
-    private static Account account1;
-    private static CreditCard creditCardTo;
-    private static Account account2;
-    private static Amount randomTransferAmount;
-    private static OperationService operationService;
+    private CreditCard creditCardFrom;
+    private Account account1;
+    private CreditCard creditCardTo;
+    private Account account2;
+    private Amount randomTransferAmount;
+    private OperationService operationService;
 
-    private static TransferOperation transferOperation;
-    private static CreditCardInfoToTransfer creditCardInfoToTransfer;
-    private static VerificationRequest verificationRequest;
+    private TransferOperation transferOperation;
+    private CreditCardInfoToTransfer creditCardInfoToTransfer;
+    private VerificationRequest verificationRequest;
 
     @Mock
-    private static BankCardsRepository bankCardsRepository;
+    private BankCardsRepository bankCardsRepository;
     @Mock
-    private static TransferOperationRepository transferOperationRepository;
+    private TransferOperationRepository transferOperationRepository;
 
     @BeforeEach
     public void init() {
@@ -49,26 +49,26 @@ class BankCardsUnitTests {
 
         creditCardTo = new CreditCard();
         creditCardTo.setCardNumber("0987654321098765");
+        creditCardTo.setCardValidTill("01/24");
+        creditCardTo.setCardCVV("987");
         account2 = new Account(creditCardTo, new Balance("RUR", 10000));
-
-        randomTransferAmount = new Amount("RUR", 55);
 
         operationService = new OperationService(bankCardsRepository, transferOperationRepository);
 
         creditCardInfoToTransfer = new CreditCardInfoToTransfer(creditCardFrom.getCardNumber(), creditCardTo.getCardNumber(),
                 creditCardFrom.getCardValidTill(), creditCardFrom.getCardCVV(),
                 randomTransferAmount);
-
-        transferOperation = new TransferOperation(creditCardFrom, creditCardTo, randomTransferAmount);
     }
-
 
     @Test
     public void successSaveOperationTest() {
         BankCardsRepository bankCardsRepository = Mockito.mock(BankCardsRepository.class);
         TransferOperationRepository transferOperationRepository = Mockito.mock(TransferOperationRepository.class);
         OperationService operationService = new OperationService(bankCardsRepository, transferOperationRepository);
+
         String uuid = UUID.randomUUID().toString();
+
+        randomTransferAmount = new Amount("RUR", randInt(0, 50000));
 
         CreditCardInfoToTransfer creditCardInfoToTransfer = new CreditCardInfoToTransfer(
                 creditCardFrom.getCardNumber(), creditCardTo.getCardNumber(),
@@ -97,6 +97,8 @@ class BankCardsUnitTests {
         TransferOperationRepository transferOperationRepository = Mockito.mock(TransferOperationRepository.class);
         OperationService operationService = new OperationService(bankCardsRepository, transferOperationRepository);
         String uuid = UUID.randomUUID().toString();
+
+        randomTransferAmount = new Amount("RUR", randInt(0, 50000));
 
         CreditCardInfoToTransfer creditCardInfoToTransfer = new CreditCardInfoToTransfer(
                 creditCardFrom.getCardNumber(), creditCardTo.getCardNumber(),
@@ -138,7 +140,7 @@ class BankCardsUnitTests {
         OperationService operationService = new OperationService(bankCardsRepository, transferOperationRepository);
         String uuid = UUID.randomUUID().toString();
 
-        verificationRequest = new VerificationRequest(uuid, "1234");
+        verificationRequest = new VerificationRequest(uuid, randFourDigitInt());
 
         Mockito.when(transferOperationRepository.getById(uuid)).thenReturn(transferOperation);
 
@@ -152,6 +154,10 @@ class BankCardsUnitTests {
         OperationService operationService = new OperationService(bankCardsRepository, transferOperationRepository);
         String uuid = UUID.randomUUID().toString();
 
+        int transferAmount = randInt(0, 50000);
+
+        transferOperation = new TransferOperation(creditCardFrom, creditCardTo, new Amount("RUR", transferAmount));
+
         verificationRequest = new VerificationRequest(uuid, "0000");
 
         Mockito.when(transferOperationRepository.getById(uuid)).thenReturn(transferOperation);
@@ -164,31 +170,35 @@ class BankCardsUnitTests {
     }
 
     @Test
-    public void balanceAccountFromMoreThanValueTransferTransferTest() {
+    public void balanceAccountFromMoreThanOrEqualValueTransferTest() {
         BankCardsRepository bankCardsRepository = Mockito.mock(BankCardsRepository.class);
         TransferOperationRepository transferOperationRepository = Mockito.mock(TransferOperationRepository.class);
         OperationService operationService = new OperationService(bankCardsRepository, transferOperationRepository);
         String uuid = UUID.randomUUID().toString();
-        int transferAmount = 3000;
+
+        int transferAmount = randInt(0, 50000);
 
         transferOperation = new TransferOperation(creditCardFrom, creditCardTo, new Amount("RUR", transferAmount));
 
         Mockito.when(bankCardsRepository.getByNumberCard(transferOperation.getCreditCardFrom().getCardNumber())).thenReturn(account1);
         Mockito.when(bankCardsRepository.getByNumberCard(transferOperation.getCreditCardTo().getCardNumber())).thenReturn(account2);
 
+        int balanceAccount1 = account1.getBalance().getAmount() - transferAmount - transferAmount / 100;
+        int balanceAccount2 = account2.getBalance().getAmount() + transferAmount;
         operationService.transfer(transferOperation, uuid);
 
-        Assertions.assertEquals(account1.getBalance().getAmount(), 46970);
-        Assertions.assertEquals(account2.getBalance().getAmount(), 13000);
+        Assertions.assertEquals(balanceAccount1, account1.getBalance().getAmount());
+        Assertions.assertEquals(balanceAccount2, account2.getBalance().getAmount());
     }
 
     @Test
-    public void balanceAccountFromLessThanValueTransferTransferTest() {
+    public void balanceAccountFromLessThanValueTransferTest() {
         BankCardsRepository bankCardsRepository = Mockito.mock(BankCardsRepository.class);
         TransferOperationRepository transferOperationRepository = Mockito.mock(TransferOperationRepository.class);
         OperationService operationService = new OperationService(bankCardsRepository, transferOperationRepository);
         String uuid = UUID.randomUUID().toString();
-        int transferAmount = 55000;
+
+        int transferAmount = randInt(50001, 10_000_000);
 
         transferOperation = new TransferOperation(creditCardFrom, creditCardTo, new Amount("RUR", transferAmount));
 
@@ -198,5 +208,26 @@ class BankCardsUnitTests {
         Assertions.assertThrows(ErrorTransfer.class, () -> operationService.transfer(transferOperation, uuid));
     }
 
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
+    }
 
+    public static String randFourDigitInt() {
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            numbers.add(i);
+        }
+
+        Collections.shuffle(numbers);
+
+        String result = "";
+        for (int i = 0; i < 4; i++) {
+            result += numbers.get(i).toString();
+        }
+        if (result.equals("0000")) {
+            randFourDigitInt();
+        }
+        return result;
+    }
 }

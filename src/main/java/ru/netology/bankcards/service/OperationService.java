@@ -2,8 +2,8 @@ package ru.netology.bankcards.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.netology.bankcards.controller.CreditCardInfoToTransfer;
-import ru.netology.bankcards.controller.VerificationRequest;
+import ru.netology.bankcards.model.CreditCardInfoToTransfer;
+import ru.netology.bankcards.model.VerificationRequest;
 import ru.netology.bankcards.logger.Logger;
 import ru.netology.bankcards.utils.ErrorConfirmation;
 import ru.netology.bankcards.utils.ErrorInputData;
@@ -66,7 +66,7 @@ public class OperationService {
         int valueTransfer = transferOperation.getAmount().getValue();
         int commission = valueTransfer / 100;
 
-        if (balanceAccountFrom > valueTransfer) {
+        if (balanceAccountFrom > valueTransfer + commission) {
             accountFrom.setBalance(new Balance("RUR", balanceAccountFrom - valueTransfer - commission));
             accountTo.setBalance(new Balance("RUR", balanceAccountTo + valueTransfer));
 
