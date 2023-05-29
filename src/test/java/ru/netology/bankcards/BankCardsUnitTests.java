@@ -22,7 +22,7 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
-class BankCardsApplicationTests {
+class BankCardsUnitTests {
     private static CreditCard creditCardFrom;
     private static Account account1;
     private static CreditCard creditCardTo;
